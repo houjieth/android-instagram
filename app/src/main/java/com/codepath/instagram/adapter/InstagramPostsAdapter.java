@@ -29,6 +29,9 @@ import com.squareup.picasso.Transformation;
 
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 /**
  * Created by jie on 12/1/15.
  */
@@ -160,28 +163,20 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
     }
 
     public static class PostItemViewHolder extends RecyclerView.ViewHolder {
-        public ImageView ivUserImage;
-        public TextView tvUsername;
-        public TextView tvTimestamp;
-        public ImageView ivPhoto;
-        public TextView tvLikes;
-        public TextView tvCaption;
-        public TextView tvViewAllComments;
-        public ImageView ivMoreDots;
-        public LinearLayout llComments;
+        @Bind(R.id.ivUserImage) ImageView ivUserImage;
+        @Bind(R.id.tvUsername) TextView tvUsername;
+        @Bind(R.id.tvTimestamp) TextView tvTimestamp;
+        @Bind(R.id.ivPhoto) ImageView ivPhoto;
+        @Bind(R.id.tvLikes) TextView tvLikes;
+        @Bind(R.id.tvCaption) TextView tvCaption;
+        @Bind(R.id.tvViewAllComments) TextView tvViewAllComments;
+        @Bind(R.id.ivMoreDots) ImageView ivMoreDots;
+        @Bind(R.id.llComments) LinearLayout llComments;
 
         public PostItemViewHolder(View view) {
             super(view);
 
-            ivUserImage = (ImageView) view.findViewById(R.id.ivUserImage);
-            tvUsername = (TextView) view.findViewById(R.id.tvUsername);
-            tvTimestamp = (TextView) view.findViewById(R.id.tvTimestamp);
-            ivPhoto = (ImageView) view.findViewById(R.id.ivPhoto);
-            tvLikes = (TextView) view.findViewById(R.id.tvLikes);
-            tvCaption = (TextView) view.findViewById(R.id.tvCaption);
-            tvViewAllComments = (TextView) view.findViewById(R.id.tvViewAllComments);
-            ivMoreDots = (ImageView) view.findViewById(R.id.ivMoreDots);
-            llComments = (LinearLayout) view.findViewById(R.id.llComments);
+            ButterKnife.bind(this, view);
         }
     }
 }

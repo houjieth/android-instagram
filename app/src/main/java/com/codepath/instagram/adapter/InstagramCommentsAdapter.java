@@ -17,6 +17,9 @@ import com.squareup.picasso.Transformation;
 
 import java.util.List;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 /**
  * Created by jie on 12/2/15.
  */
@@ -62,16 +65,14 @@ public class InstagramCommentsAdapter extends RecyclerView.Adapter<InstagramComm
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public ImageView ivCommentAvantar;
-        public TextView tvCommentComment;
-        public TextView tvCommentTimestamp;
+        @Bind(R.id.ivCommentAvatar) ImageView ivCommentAvantar;
+        @Bind(R.id.tvCommentComment) TextView tvCommentComment;
+        @Bind(R.id.tvCommentTimestamp) TextView tvCommentTimestamp;
 
         public ViewHolder(View view) {
             super(view);
 
-            ivCommentAvantar = (ImageView) view.findViewById(R.id.ivCommentAvatar);
-            tvCommentComment = (TextView) view.findViewById(R.id.tvCommentComment);
-            tvCommentTimestamp = (TextView) view.findViewById(R.id.tvCommentTimestamp);
+            ButterKnife.bind(this, view);
         }
     }
 }
