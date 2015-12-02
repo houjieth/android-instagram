@@ -1,6 +1,7 @@
 package com.codepath.instagram.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
@@ -12,8 +13,11 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.codepath.instagram.R;
+import com.codepath.instagram.activities.CommentsActivity;
+import com.codepath.instagram.activities.HomeActivity;
 import com.codepath.instagram.helpers.DeviceDimensionsHelper;
 import com.codepath.instagram.helpers.Utils;
 import com.codepath.instagram.models.InstagramComment;
@@ -47,7 +51,7 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
 
     @Override
     public void onBindViewHolder(PostItemViewHolder holder, int position) {
-        InstagramPost post = posts.get(position);
+        final InstagramPost post = posts.get(position);
 
         holder.ivUserImage.setImageDrawable(null);
         Transformation transformation = new RoundedTransformationBuilder()
@@ -61,9 +65,7 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
 
         holder.tvUsername.setText(post.user.userName);
 
-        holder.tvTimestamp.setText(
-                DateUtils.getRelativeTimeSpanString(post.createdTime * 1000,
-                        System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS));
+        holder.tvTimestamp.setText(Utils.convertToInstagramStyleTimestamp(post.createdTime));
 
         holder.ivPhoto.setImageDrawable(null);
         int displayWidth = DeviceDimensionsHelper.getDisplayWidth(context);
@@ -78,7 +80,7 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
         if (post.caption == null || post.caption.length() == 0) {
             holder.tvCaption.setVisibility(View.GONE);
         } else {
-            holder.tvCaption.setText(buildCommentSpanable(post.user.userName, post.caption));
+            holder.tvCaption.setText(Utils.buildCommentSpanable(post.user.userName, post.caption, context));
         }
 
         if (post.commentsCount == 0) {
@@ -91,6 +93,15 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
             holder.tvViewAllComments.setText("View all " + post.commentsCount + " comments");
             inflateComments(post, 2, holder.llComments);
         }
+
+        holder.tvViewAllComments.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context, CommentsActivity.class);
+                intent.putExtra("mediaId", post.mediaId);
+                context.startActivity(intent);
+            }
+        });
     }
 
     private void inflateComments(InstagramPost post, int count, ViewGroup root) {
@@ -99,25 +110,11 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
         for (int i = 0; i < count; i++) {
             InstagramComment comment = post.comments.get(i);
             TextView commentView = (TextView) inflater.inflate(R.layout.layout_item_text_comment, root, false);
-            commentView.setText(buildCommentSpanable(comment.user.userName, comment.text));
+            commentView.setText(Utils.buildCommentSpanable(comment.user.userName, comment.text, context));
             root.addView(commentView);
         }
     }
 
-    private SpannableStringBuilder buildCommentSpanable(String username, String text) {
-        ForegroundColorSpan blueForegroundColorSpan = new ForegroundColorSpan(
-                context.getResources().getColor(R.color.blue_text));
-        SpannableStringBuilder builder = new SpannableStringBuilder(username);
-        builder.setSpan(
-                blueForegroundColorSpan,
-                0,
-                builder.length(),
-                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-        );
-        builder.append(" ");
-        builder.append(text);
-        return builder;
-    }
 
     @Override
     public int getItemCount() {

@@ -1,7 +1,13 @@
 package com.codepath.instagram.helpers;
 
 import android.content.Context;
+import android.text.SpannableStringBuilder;
+import android.text.Spanned;
+import android.text.format.DateUtils;
+import android.text.style.ForegroundColorSpan;
+import android.widget.Toast;
 
+import com.codepath.instagram.R;
 import com.codepath.instagram.models.InstagramComment;
 import com.codepath.instagram.models.InstagramPost;
 import com.codepath.instagram.models.InstagramSearchTag;
@@ -77,5 +83,29 @@ public class Utils {
             jsonArray = jsonObject.optJSONArray("data");
         }
         return jsonArray;
+    }
+
+    public static void makeToast(String text, Context context) {
+        Toast.makeText(context, text, Toast.LENGTH_SHORT).show();
+    }
+
+    public static SpannableStringBuilder buildCommentSpanable(String username, String text, Context context) {
+        ForegroundColorSpan blueForegroundColorSpan = new ForegroundColorSpan(
+                context.getResources().getColor(R.color.blue_text));
+        SpannableStringBuilder builder = new SpannableStringBuilder(username);
+        builder.setSpan(
+                blueForegroundColorSpan,
+                0,
+                builder.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        );
+        builder.append(" ");
+        builder.append(text);
+        return builder;
+    }
+
+    public static CharSequence convertToInstagramStyleTimestamp(long time) {
+        return DateUtils.getRelativeTimeSpanString(time * 1000,
+                System.currentTimeMillis(), DateUtils.SECOND_IN_MILLIS);
     }
 }

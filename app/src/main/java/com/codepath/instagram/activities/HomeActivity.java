@@ -1,12 +1,14 @@
 package com.codepath.instagram.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
+import android.view.View;
+import android.widget.TextView;
 
 import com.codepath.instagram.R;
 import com.codepath.instagram.adapter.InstagramPostsAdapter;
@@ -68,14 +70,11 @@ public class HomeActivity extends AppCompatActivity {
                 rvPosts.setLayoutManager(new LinearLayoutManager(HomeActivity.this));
                 rvPosts.addItemDecoration(new SimpleVerticalSpacerItemDecoration(24));
             }
+
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                makeToast("Fail to make http request (" + statusCode + ")");
+                Utils.makeToast("Fail to make http request (" + statusCode + ")", HomeActivity.this);
             }
         });
-    }
-
-    private void makeToast(String text) {
-        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
     }
 }
