@@ -34,6 +34,8 @@
         android:layout_marginRight="14dp"
         android:id="@+id/tvTimestamp"/>
 
+    <!-- THE BIG PIC STARTS -->
+
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -42,17 +44,56 @@
         android:adjustViewBounds="true"
         android:scaleType="fitXY"/>
 
+    <!-- THE BIG PIC ENDS -->
+
+    <ImageView
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:id="@+id/ivHeart"
+        android:src="@drawable/ic_heart"
+        android:layout_marginLeft="14dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:scaleType="fitCenter"
+        android:layout_below="@+id/ivPhoto"/>
+
+    <ImageView
+        android:layout_width="22dp"
+        android:layout_height="22dp"
+        android:layout_marginLeft="10dp"
+        android:layout_alignTop="@+id/ivHeart"
+        android:layout_toRightOf="@+id/ivHeart"
+        android:id="@+id/ivComment"
+        android:src="@drawable/ic_comment" />
+
+    <ImageView
+        android:layout_width="8dp"
+        android:layout_height="22dp"
+        android:layout_marginRight="14dp"
+        android:layout_alignTop="@+id/ivHeart"
+        android:id="@+id/ivMoreDots"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/ic_more_dots" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/ivHeart"
+        android:layout_marginBottom="10dp"
+        android:id="@+id/tvSeparatorLine"
+        android:background="@color/light_gray_separator_line"/>
+
     <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:layout_below="@+id/tvSeparatorLine"
         android:layout_marginLeft="14dp"
-        android:layout_below="@+id/ivPhoto"
         android:gravity="center|left"
         android:textSize="14sp"
         android:id="@+id/tvLikes"
         android:drawableLeft="@drawable/ic_small_heart_filled"
-        android:drawablePadding="4dp"
+        android:drawablePadding="14dp"
         android:text="LIKES"
         android:textColor="@color/blue_text"/>
 
@@ -62,10 +103,29 @@
         android:text="CAPTION"
         android:id="@+id/tvCaption"
         android:layout_below="@+id/tvLikes"
-        android:layout_marginLeft="4dp"
-        android:layout_marginRight="4dp"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp"
         android:lineSpacingMultiplier="1.2"/>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="24dp"
+        android:layout_marginLeft="14dp"
+        android:layout_below="@+id/tvCaption"
+        android:id="@+id/tvViewAllComments"
+        android:gravity="center|left"
+        android:textSize="14sp"
+        android:textColor="@color/light_gray_text"
+        android:text="VIEW ALL COMMENTS"/>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="vertical"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp"
+        android:layout_below="@+id/tvViewAllComments"
+        android:text="COMMENTS"
+        android:id="@+id/llComments"/>
 
 </RelativeLayout>

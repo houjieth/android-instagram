@@ -10,11 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.codepath.instagram.R;
 import com.codepath.instagram.helpers.DeviceDimensionsHelper;
 import com.codepath.instagram.helpers.Utils;
+import com.codepath.instagram.models.InstagramComment;
 import com.codepath.instagram.models.InstagramPost;
 import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
@@ -76,19 +78,45 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
         if (post.caption == null || post.caption.length() == 0) {
             holder.tvCaption.setVisibility(View.GONE);
         } else {
-            ForegroundColorSpan blueForegroundColorSpan = new ForegroundColorSpan(
-                    context.getResources().getColor(R.color.blue_text));
-            SpannableStringBuilder builder = new SpannableStringBuilder(post.user.userName);
-            builder.setSpan(
-                    blueForegroundColorSpan,
-                    0,
-                    builder.length(),
-                    Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-            );
-            builder.append(" ");
-            builder.append(post.caption);
-            holder.tvCaption.setText(builder);
+            holder.tvCaption.setText(buildCommentSpanable(post.user.userName, post.caption));
         }
+
+        if (post.commentsCount == 0) {
+            holder.llComments.setVisibility(View.GONE);
+            holder.tvViewAllComments.setVisibility(View.GONE);
+        } else if (post.commentsCount <= 2) {
+            holder.tvViewAllComments.setVisibility(View.GONE);
+            inflateComments(post, post.commentsCount, holder.llComments);
+        } else {
+            holder.tvViewAllComments.setText("View all " + post.commentsCount + " comments");
+            inflateComments(post, 2, holder.llComments);
+        }
+    }
+
+    private void inflateComments(InstagramPost post, int count, ViewGroup root) {
+        root.removeAllViews();
+        LayoutInflater inflater = LayoutInflater.from(context);
+        for (int i = 0; i < count; i++) {
+            InstagramComment comment = post.comments.get(i);
+            TextView commentView = (TextView) inflater.inflate(R.layout.layout_item_text_comment, root, false);
+            commentView.setText(buildCommentSpanable(comment.user.userName, comment.text));
+            root.addView(commentView);
+        }
+    }
+
+    private SpannableStringBuilder buildCommentSpanable(String username, String text) {
+        ForegroundColorSpan blueForegroundColorSpan = new ForegroundColorSpan(
+                context.getResources().getColor(R.color.blue_text));
+        SpannableStringBuilder builder = new SpannableStringBuilder(username);
+        builder.setSpan(
+                blueForegroundColorSpan,
+                0,
+                builder.length(),
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+        );
+        builder.append(" ");
+        builder.append(text);
+        return builder;
     }
 
     @Override
@@ -103,6 +131,8 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
         public ImageView ivPhoto;
         public TextView tvLikes;
         public TextView tvCaption;
+        public TextView tvViewAllComments;
+        public LinearLayout llComments;
 
         public PostItemViewHolder(View view) {
             super(view);
@@ -113,6 +143,8 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
             ivPhoto = (ImageView) view.findViewById(R.id.ivPhoto);
             tvLikes = (TextView) view.findViewById(R.id.tvLikes);
             tvCaption = (TextView) view.findViewById(R.id.tvCaption);
+            tvViewAllComments = (TextView) view.findViewById(R.id.tvViewAllComments);
+            llComments = (LinearLayout) view.findViewById(R.id.llComments);
         }
     }
 }
