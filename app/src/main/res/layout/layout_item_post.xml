@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+    <ImageView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_marginRight="8dp"
+        android:layout_width="30dp"
+        android:layout_height="52dp"
+        android:layout_gravity="left"
+        android:layout_marginLeft="14dp"
+        android:gravity="center"
+        android:id="@+id/ivUserImage"/>
+
+    <TextView
+        android:layout_height="52dp"
+        android:layout_width="wrap_content"
+        android:layout_toRightOf="@id/ivUserImage"
+        android:gravity="center|left"
+        android:text="USER NAME"
+        android:textStyle="bold"
+        android:textColor="@color/blue_text"
+        android:id="@+id/tvUsername"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="52dp"
+        android:layout_toRightOf="@+id/tvUsername"
+        android:layout_alignParentRight="true"
+        android:text="TIME"
+        android:textColorLink="@color/light_gray_text"
+        android:gravity="center|right"
+        android:layout_marginRight="14dp"
+        android:id="@+id/tvTimestamp"/>
+
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ivPhoto"
+        android:layout_below="@id/tvUsername"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"/>
+
+    <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="14dp"
+        android:layout_below="@+id/ivPhoto"
+        android:gravity="center|left"
+        android:textSize="14sp"
+        android:id="@+id/tvLikes"
+        android:drawableLeft="@drawable/ic_small_heart_filled"
+        android:drawablePadding="4dp"
+        android:text="LIKES"
+        android:textColor="@color/blue_text"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="CAPTION"
+        android:id="@+id/tvCaption"
+        android:layout_below="@+id/tvLikes"
+        android:layout_marginLeft="4dp"
+        android:layout_marginRight="4dp"
+        android:lineSpacingMultiplier="1.2"/>
+
+
+
+</RelativeLayout>
