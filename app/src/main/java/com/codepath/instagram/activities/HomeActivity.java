@@ -6,18 +6,21 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.codepath.instagram.R;
 import com.codepath.instagram.adapter.InstagramPostsAdapter;
 import com.codepath.instagram.helpers.SimpleVerticalSpacerItemDecoration;
 import com.codepath.instagram.helpers.Utils;
 import com.codepath.instagram.models.InstagramPost;
+import com.codepath.instagram.networking.InstagramClient;
+import com.loopj.android.http.JsonHttpResponseHandler;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.IOException;
 import java.util.List;
+
+import cz.msebera.android.httpclient.Header;
 
 
 public class HomeActivity extends AppCompatActivity {
@@ -30,12 +33,6 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
 
         fetchPosts();
-
-        RecyclerView rvPosts = (RecyclerView) findViewById(R.id.rvPosts);
-        InstagramPostsAdapter adapter = new InstagramPostsAdapter(posts, this);
-        rvPosts.setAdapter(adapter);
-        rvPosts.setLayoutManager(new LinearLayoutManager(this));
-        rvPosts.addItemDecoration(new SimpleVerticalSpacerItemDecoration(24));
     }
 
     @Override
@@ -61,14 +58,24 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void fetchPosts() {
-        // load popular posts
-        try {
-            JSONObject json = Utils.loadJsonFromAsset(this, "popular.json");
-            posts = Utils.decodePostsFromJsonResponse(json);
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        InstagramClient.getPopularFeed(new JsonHttpResponseHandler() {
+            @Override
+            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
+                posts = Utils.decodePostsFromJsonResponse(response);
+                RecyclerView rvPosts = (RecyclerView) findViewById(R.id.rvPosts);
+                InstagramPostsAdapter adapter = new InstagramPostsAdapter(posts, HomeActivity.this);
+                rvPosts.setAdapter(adapter);
+                rvPosts.setLayoutManager(new LinearLayoutManager(HomeActivity.this));
+                rvPosts.addItemDecoration(new SimpleVerticalSpacerItemDecoration(24));
+            }
+            @Override
+            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+                makeToast("Fail to make http request (" + statusCode + ")");
+            }
+        });
+    }
+
+    private void makeToast(String text) {
+        Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
     }
 }
