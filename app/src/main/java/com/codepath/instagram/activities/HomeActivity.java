@@ -1,14 +1,14 @@
 package com.codepath.instagram.activities;
 
-import android.content.Intent;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.TextView;
 
 import com.codepath.instagram.R;
 import com.codepath.instagram.adapter.InstagramPostsAdapter;
@@ -33,6 +33,11 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        if (!isNetworkAvailable()) {
+            Utils.makeToast("Please check your network", this);
+            return;
+        }
 
         fetchPosts();
     }
@@ -73,8 +78,15 @@ public class HomeActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Utils.makeToast("Fail to make http request (" + statusCode + ")", HomeActivity.this);
+                Utils.makeToast("Please check your network", HomeActivity.this);
             }
         });
+    }
+
+    private Boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
     }
 }

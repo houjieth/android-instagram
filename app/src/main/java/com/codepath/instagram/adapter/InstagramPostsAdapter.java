@@ -2,22 +2,23 @@ package com.codepath.instagram.adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
-import android.text.SpannableStringBuilder;
-import android.text.Spanned;
-import android.text.format.DateUtils;
-import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.codepath.instagram.R;
 import com.codepath.instagram.activities.CommentsActivity;
-import com.codepath.instagram.activities.HomeActivity;
 import com.codepath.instagram.helpers.DeviceDimensionsHelper;
 import com.codepath.instagram.helpers.Utils;
 import com.codepath.instagram.models.InstagramComment;
@@ -102,6 +103,43 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
                 context.startActivity(intent);
             }
         });
+
+        final ImageView ivMoreDots = holder.ivMoreDots;
+        final ImageView ivPhoto = holder.ivPhoto;
+        ivMoreDots.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPopup(ivMoreDots, ivPhoto);
+            }
+        });
+    }
+
+    private void showPopup(View view, final ImageView imageView) {
+        PopupMenu popup = new PopupMenu(context, view);
+        popup.getMenuInflater().inflate(R.menu.menu_popup, popup.getMenu());
+        popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            public boolean onMenuItemClick(MenuItem item) {
+                switch (item.getItemId()) {
+                    case R.id.mnPopupShare:
+                        Drawable drawable = imageView.getDrawable();
+                        Bitmap mBitmap = ((BitmapDrawable) drawable).getBitmap();
+                        String path = MediaStore.Images.Media.insertImage(
+                                context.getContentResolver(),
+                                mBitmap,
+                                "Instagram Photo",
+                                null
+                        );
+                        Uri uri = Uri.parse(path);
+                        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                        shareIntent.putExtra(Intent.EXTRA_STREAM, uri);
+                        shareIntent.setType("image/*");
+                        context.startActivity(Intent.createChooser(shareIntent, "Share Image"));
+                    default:
+                        return false;
+                }
+            }
+        });
+        popup.show();
     }
 
     private void inflateComments(InstagramPost post, int count, ViewGroup root) {
@@ -129,6 +167,7 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
         public TextView tvLikes;
         public TextView tvCaption;
         public TextView tvViewAllComments;
+        public ImageView ivMoreDots;
         public LinearLayout llComments;
 
         public PostItemViewHolder(View view) {
@@ -141,6 +180,7 @@ public class InstagramPostsAdapter extends RecyclerView.Adapter<InstagramPostsAd
             tvLikes = (TextView) view.findViewById(R.id.tvLikes);
             tvCaption = (TextView) view.findViewById(R.id.tvCaption);
             tvViewAllComments = (TextView) view.findViewById(R.id.tvViewAllComments);
+            ivMoreDots = (ImageView) view.findViewById(R.id.ivMoreDots);
             llComments = (LinearLayout) view.findViewById(R.id.llComments);
         }
     }

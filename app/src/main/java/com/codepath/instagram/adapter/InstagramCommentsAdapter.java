@@ -2,7 +2,6 @@ package com.codepath.instagram.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,6 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Transformation;
 
 import java.util.List;
-import java.util.zip.Inflater;
 
 /**
  * Created by jie on 12/2/15.

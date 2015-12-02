@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 
 import com.codepath.instagram.R;
 import com.codepath.instagram.adapter.InstagramCommentsAdapter;
-import com.codepath.instagram.helpers.SimpleVerticalSpacerItemDecoration;
 import com.codepath.instagram.helpers.Utils;
 import com.codepath.instagram.models.InstagramComment;
 import com.codepath.instagram.networking.InstagramClient;
@@ -44,7 +43,7 @@ public class CommentsActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Utils.makeToast("Fail to make http request (" + statusCode + ")", CommentsActivity.this);
+                Utils.makeToast("Please check your network", CommentsActivity.this);
             }
         });
     }
