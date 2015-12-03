@@ -1,45 +1,21 @@
 package com.codepath.instagram.activities;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.codepath.instagram.R;
-import com.codepath.instagram.adapter.InstagramPostsAdapter;
-import com.codepath.instagram.helpers.SimpleVerticalSpacerItemDecoration;
-import com.codepath.instagram.helpers.Utils;
-import com.codepath.instagram.models.InstagramPost;
-import com.codepath.instagram.networking.InstagramClient;
-import com.loopj.android.http.JsonHttpResponseHandler;
-
-import org.json.JSONObject;
-
-import java.util.List;
-
-import cz.msebera.android.httpclient.Header;
+import com.codepath.instagram.fragments.PostsFragment;
 
 
-public class HomeActivity extends AppCompatActivity {
-    private static final String TAG = "HomeActivity";
-    private List<InstagramPost> posts;
+public class HomeActivity extends AppCompatActivity implements PostsFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
-        if (!isNetworkAvailable()) {
-            Utils.makeToast("Please check your network", this);
-            return;
-        }
-
-        fetchPosts();
     }
 
     @Override
@@ -64,29 +40,9 @@ public class HomeActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void fetchPosts() {
-        InstagramClient.getPopularFeed(new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                posts = Utils.decodePostsFromJsonResponse(response);
-                RecyclerView rvPosts = (RecyclerView) findViewById(R.id.rvPosts);
-                InstagramPostsAdapter adapter = new InstagramPostsAdapter(posts, HomeActivity.this);
-                rvPosts.setAdapter(adapter);
-                rvPosts.setLayoutManager(new LinearLayoutManager(HomeActivity.this));
-                rvPosts.addItemDecoration(new SimpleVerticalSpacerItemDecoration(24));
-            }
 
-            @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-                Utils.makeToast("Please check your network", HomeActivity.this);
-            }
-        });
-    }
-
-    private Boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+        // no-op
     }
 }

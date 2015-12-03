@@ -67,12 +67,13 @@
         android:src="@drawable/ic_comment" />
 
     <ImageView
-        android:layout_width="8dp"
+        android:layout_width="22dp"
         android:layout_height="22dp"
         android:layout_marginRight="14dp"
         android:layout_alignTop="@+id/ivHeart"
         android:id="@+id/ivMoreDots"
         android:layout_alignParentRight="true"
+        android:gravity="right"
         android:src="@drawable/ic_more_dots" />
 
     <TextView

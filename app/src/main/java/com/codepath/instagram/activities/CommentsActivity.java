@@ -31,7 +31,8 @@ public class CommentsActivity extends AppCompatActivity {
     }
 
     private void fetchComments(String mediaId) {
-        InstagramClient.getComments(mediaId, new JsonHttpResponseHandler() {
+        InstagramClient client = new InstagramClient(this);
+        client.getComments(mediaId, new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 comments = Utils.decodeCommentsFromJsonResponse(response);
