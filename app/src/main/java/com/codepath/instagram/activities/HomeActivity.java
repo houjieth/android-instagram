@@ -2,11 +2,14 @@ package com.codepath.instagram.activities;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.codepath.instagram.R;
+import com.codepath.instagram.adapter.HomeFragmentStatePagerAdapter;
 import com.codepath.instagram.fragments.PostsFragment;
 
 
@@ -16,6 +19,12 @@ public class HomeActivity extends AppCompatActivity implements PostsFragment.OnF
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        viewPager.setAdapter(new HomeFragmentStatePagerAdapter(getSupportFragmentManager(), this));
+
+        TabLayout tableLayout = (TabLayout) findViewById(R.id.tabsBar);
+        tableLayout.setupWithViewPager(viewPager);
     }
 
     @Override
