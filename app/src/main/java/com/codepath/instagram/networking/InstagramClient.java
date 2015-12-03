@@ -22,9 +22,12 @@ public class InstagramClient extends OAuthBaseClient {
     public static final String REDIRECT_URI = Constants.REDIRECT_URI;
     public static final String SCOPE = Constants.SCOPE;
 
+    private String accessToken;
+
     public InstagramClient(Context context) {
         super(context, REST_API_CLASS, REST_URL,
                 REST_CONSUMER_KEY, REST_CONSUMER_SECRET, REDIRECT_URI, SCOPE);
+        accessToken = client.getAccessToken().getToken();
     }
 
     public void getPopularFeed(JsonHttpResponseHandler responseHandler) {
@@ -43,12 +46,18 @@ public class InstagramClient extends OAuthBaseClient {
 
     public void getFeed(JsonHttpResponseHandler responseHandler) {
         String url = "https://api.instagram.com/v1/users/self/feed";
-        String accessToken = client.getAccessToken().getToken();
-
         // A hack! For some reason the library doesn't append the access_token to the request
         // we have to do it manually
         RequestParams params = new RequestParams();
         params.put("access_token", accessToken);
+        client.get(url, params, responseHandler);
+    }
+
+    public void queryUser(String searchTerm, JsonHttpResponseHandler responseHandler) {
+        String url = "https://api.instagram.com/v1/users/search";
+        RequestParams params = new RequestParams();
+        params.put("access_token", accessToken);
+        params.put("q", searchTerm);
         client.get(url, params, responseHandler);
     }
 }
