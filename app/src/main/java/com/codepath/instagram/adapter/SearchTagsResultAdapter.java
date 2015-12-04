@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.codepath.instagram.R;
+import com.codepath.instagram.helpers.Utils;
 import com.codepath.instagram.models.InstagramSearchTag;
 import com.codepath.instagram.models.InstagramUser;
 import com.makeramen.roundedimageview.RoundedTransformationBuilder;
@@ -36,8 +37,8 @@ public class SearchTagsResultAdapter extends RecyclerView.Adapter<SearchTagsResu
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View userView = inflater.inflate(R.layout.layout_item_tag, parent, false);
-        ViewHolder viewHolder = new ViewHolder(userView);
+        View tagView = inflater.inflate(R.layout.layout_item_tag, parent, false);
+        ViewHolder viewHolder = new ViewHolder(tagView);
         return viewHolder;
     }
 
@@ -45,13 +46,13 @@ public class SearchTagsResultAdapter extends RecyclerView.Adapter<SearchTagsResu
     public void onBindViewHolder(ViewHolder holder, int position) {
         InstagramSearchTag tag = tags.get(position);
 
-        holder.tvTagName.setText(tag.tag);
-        holder.tvTagCount.setText(tag.count);
+        holder.tvTagName.setText("#" + tag.tag);
+        holder.tvTagCount.setText(Utils.formatNumberForDisplay(tag.count) + " posts");
     }
 
     @Override
     public int getItemCount() {
-        return 3;
+        return tags.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

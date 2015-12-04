@@ -3,6 +3,7 @@ package com.codepath.instagram.Handler;
 import android.app.Activity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.codepath.instagram.R;
 import com.codepath.instagram.adapter.SearchUsersResultAdapter;
@@ -21,23 +22,23 @@ import cz.msebera.android.httpclient.Header;
  */
 public class UsersResultHandler extends JsonHttpResponseHandler {
 
-    private Activity activity;
+    private View view;
 
-    public UsersResultHandler(Activity activity) {
-        this.activity = activity;
+    public UsersResultHandler(View view) {
+        this.view = view;
     }
 
     @Override
     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
         List<InstagramUser> users = Utils.decodeUsersFromJsonResponse(response);
-        RecyclerView rvUsers = (RecyclerView) activity.findViewById(R.id.rvUsers);
-        SearchUsersResultAdapter adapter = new SearchUsersResultAdapter(users, activity);
+        RecyclerView rvUsers = (RecyclerView) view.findViewById(R.id.rvUsers);
+        SearchUsersResultAdapter adapter = new SearchUsersResultAdapter(users, view.getContext());
         rvUsers.setAdapter(adapter);
-        rvUsers.setLayoutManager(new LinearLayoutManager(activity));
+        rvUsers.setLayoutManager(new LinearLayoutManager(view.getContext()));
     }
 
     @Override
     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-        Utils.makeToast("Please check your network", activity);
+        Utils.makeToast("Please check your network", view.getContext());
     }
 }

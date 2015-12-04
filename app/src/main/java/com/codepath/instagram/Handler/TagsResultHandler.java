@@ -3,6 +3,7 @@ package com.codepath.instagram.Handler;
 import android.app.Activity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.codepath.instagram.R;
 import com.codepath.instagram.adapter.SearchTagsResultAdapter;
@@ -22,24 +23,24 @@ import cz.msebera.android.httpclient.Header;
  */
 public class TagsResultHandler extends JsonHttpResponseHandler {
 
-    private Activity activity;
+    private View view;
 
-    public TagsResultHandler(Activity activity) {
-        this.activity = activity;
+    public TagsResultHandler(View view) {
+        this.view = view;
     }
 
     @Override
     public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
         List<InstagramSearchTag> tags = Utils.decodeSearchTagsFromJsonResponse(response);
-        RecyclerView rvTags = (RecyclerView) activity.findViewById(R.id.rvTags);
-        SearchTagsResultAdapter adapter = new SearchTagsResultAdapter(tags, activity);
+        RecyclerView rvTags = (RecyclerView) view.findViewById(R.id.rvTags);
+        SearchTagsResultAdapter adapter = new SearchTagsResultAdapter(tags, view.getContext());
         rvTags.setAdapter(adapter);
-        rvTags.setLayoutManager(new LinearLayoutManager(activity));
+        rvTags.setLayoutManager(new LinearLayoutManager(view.getContext()));
     }
 
     @Override
     public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
-        Utils.makeToast("Please check your network", activity);
+        Utils.makeToast("Please check your network", view.getContext());
     }
 }
 

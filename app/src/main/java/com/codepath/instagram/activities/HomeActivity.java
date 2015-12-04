@@ -11,21 +11,22 @@ import android.view.MenuItem;
 import com.codepath.instagram.R;
 import com.codepath.instagram.adapter.HomeFragmentStatePagerAdapter;
 import com.codepath.instagram.fragments.PostsFragment;
+import com.codepath.instagram.fragments.SearchFragment;
 import com.codepath.instagram.fragments.SearchResultsFragment;
+import com.codepath.instagram.fragments.SearchTagsResultFragment;
 
 
-public class HomeActivity extends AppCompatActivity
-        implements PostsFragment.OnFragmentInteractionListener, SearchResultsFragment.OnFragmentInteractionListener {
+public class HomeActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpager);
+        ViewPager viewPager = (ViewPager) findViewById(R.id.viewpagerHome);
         viewPager.setAdapter(new HomeFragmentStatePagerAdapter(getSupportFragmentManager(), this));
 
-        TabLayout tableLayout = (TabLayout) findViewById(R.id.tabsBar);
+        TabLayout tableLayout = (TabLayout) findViewById(R.id.tagsHomebar);
         tableLayout.setupWithViewPager(viewPager);
     }
 
@@ -49,11 +50,5 @@ public class HomeActivity extends AppCompatActivity
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-
-    @Override
-    public void onFragmentInteraction(Uri uri) {
-        // no-op
     }
 }

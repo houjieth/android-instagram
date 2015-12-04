@@ -11,6 +11,7 @@ import android.text.style.ImageSpan;
 
 import com.codepath.instagram.R;
 import com.codepath.instagram.fragments.PostsFragment;
+import com.codepath.instagram.fragments.SearchFragment;
 import com.codepath.instagram.fragments.SearchResultsFragment;
 import com.codepath.instagram.fragments.SearchTagsResultFragment;
 import com.codepath.instagram.fragments.SearchUsersResultFragment;
@@ -47,7 +48,7 @@ public class HomeFragmentStatePagerAdapter extends SmartFragmentStatePagerAdapte
             case 0:
                 return new PostsFragment();
             case 1:
-                return new SearchTagsResultFragment();
+                return new SearchFragment();
             default:
                 return PostsFragment.newInstance();
         }

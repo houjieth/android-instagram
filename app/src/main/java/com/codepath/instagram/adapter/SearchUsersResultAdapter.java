@@ -60,7 +60,7 @@ public class SearchUsersResultAdapter extends RecyclerView.Adapter<SearchUsersRe
 
     @Override
     public int getItemCount() {
-        return 3;
+        return users.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
