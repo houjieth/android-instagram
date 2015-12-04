@@ -4,9 +4,16 @@
              android:layout_height="match_parent"
              tools:context="com.codepath.instagram.fragments.PostsFragment">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvPosts"
+    <android.support.v4.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:id="@+id/swipeContainer">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rvPosts"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 
 </FrameLayout>
