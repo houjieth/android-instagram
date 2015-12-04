@@ -10,3 +10,7 @@ This is a training project with Codepath
 ## Day 2
 
 ![Demo](https://github.com/houjieth/android-instagram/blob/master/Day2.gif)
+
+## Day 3
+
+![Demo](https://github.com/houjieth/android-instagram/blob/master/Day3.gif)
