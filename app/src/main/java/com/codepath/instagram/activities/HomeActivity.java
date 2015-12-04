@@ -11,11 +11,11 @@ import android.view.MenuItem;
 import com.codepath.instagram.R;
 import com.codepath.instagram.adapter.HomeFragmentStatePagerAdapter;
 import com.codepath.instagram.fragments.PostsFragment;
-import com.codepath.instagram.fragments.SearchUserResultFragment;
+import com.codepath.instagram.fragments.SearchResultsFragment;
 
 
 public class HomeActivity extends AppCompatActivity
-        implements PostsFragment.OnFragmentInteractionListener, SearchUserResultFragment.OnFragmentInteractionListener {
+        implements PostsFragment.OnFragmentInteractionListener, SearchResultsFragment.OnFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

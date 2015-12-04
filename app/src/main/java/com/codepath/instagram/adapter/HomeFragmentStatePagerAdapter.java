@@ -4,7 +4,6 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -12,7 +11,9 @@ import android.text.style.ImageSpan;
 
 import com.codepath.instagram.R;
 import com.codepath.instagram.fragments.PostsFragment;
-import com.codepath.instagram.fragments.SearchUserResultFragment;
+import com.codepath.instagram.fragments.SearchResultsFragment;
+import com.codepath.instagram.fragments.SearchTagsResultFragment;
+import com.codepath.instagram.fragments.SearchUsersResultFragment;
 import com.codepath.instagram.helpers.SmartFragmentStatePagerAdapter;
 
 /**
@@ -44,9 +45,9 @@ public class HomeFragmentStatePagerAdapter extends SmartFragmentStatePagerAdapte
     public Fragment getItem(int position) {
         switch (position) {
             case 0:
-                return PostsFragment.newInstance();
+                return new PostsFragment();
             case 1:
-                return SearchUserResultFragment.newInstance();
+                return new SearchTagsResultFragment();
             default:
                 return PostsFragment.newInstance();
         }

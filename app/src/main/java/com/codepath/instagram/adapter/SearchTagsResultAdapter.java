@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.codepath.instagram.R;
+import com.codepath.instagram.models.InstagramSearchTag;
 import com.codepath.instagram.models.InstagramUser;
 import com.makeramen.roundedimageview.RoundedTransformationBuilder;
 import com.squareup.picasso.Picasso;
@@ -22,40 +23,30 @@ import butterknife.ButterKnife;
 /**
  * Created by jie on 12/3/15.
  */
-public class SearchUserResultsAdapter extends RecyclerView.Adapter<SearchUserResultsAdapter.ViewHolder> {
+public class SearchTagsResultAdapter extends RecyclerView.Adapter<SearchTagsResultAdapter.ViewHolder> {
 
-    private List<InstagramUser> users;
+    private List<InstagramSearchTag> tags;
     private Context context;
 
-    public SearchUserResultsAdapter(List<InstagramUser> users, Context context) {
-        this.users = users;
+    public SearchTagsResultAdapter(List<InstagramSearchTag> tags, Context context) {
+        this.tags = tags;
         this.context = context;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(context);
-        View userView = inflater.inflate(R.layout.layout_item_user, parent, false);
+        View userView = inflater.inflate(R.layout.layout_item_tag, parent, false);
         ViewHolder viewHolder = new ViewHolder(userView);
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        InstagramUser user = users.get(position);
+        InstagramSearchTag tag = tags.get(position);
 
-        holder.ivUserAventar.setImageDrawable(null);
-        Transformation transformation = new RoundedTransformationBuilder()
-                .cornerRadiusDp(40)
-                .oval(false)
-                .build();
-        Picasso.with(context)
-                .load(user.profilePictureUrl)
-                .transform(transformation)
-                .into(holder.ivUserAventar);
-
-        holder.tvUserUsername.setText(user.userName);
-        holder.tvUserFullname.setText(user.fullName);
+        holder.tvTagName.setText(tag.tag);
+        holder.tvTagCount.setText(tag.count);
     }
 
     @Override
@@ -64,9 +55,8 @@ public class SearchUserResultsAdapter extends RecyclerView.Adapter<SearchUserRes
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        @Bind(R.id.ivUserAvantar) ImageView ivUserAventar;
-        @Bind(R.id.tvUserUsername) TextView tvUserUsername;
-        @Bind(R.id.tvUserFullname) TextView tvUserFullname;
+        @Bind(R.id.tvTagName) TextView tvTagName;
+        @Bind(R.id.tvTagCount) TextView tvTagCount;
 
         public ViewHolder(View view) {
             super(view);

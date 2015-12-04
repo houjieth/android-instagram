@@ -1,5 +1,6 @@
 package com.codepath.instagram.networking;
 
+import android.app.DownloadManager;
 import android.content.Context;
 
 import com.codepath.instagram.helpers.Constants;
@@ -56,8 +57,20 @@ public class InstagramClient extends OAuthBaseClient {
     public void queryUser(String searchTerm, JsonHttpResponseHandler responseHandler) {
         String url = "https://api.instagram.com/v1/users/search";
         RequestParams params = new RequestParams();
-        params.put("access_token", accessToken);
+        addAccessToken(params);
         params.put("q", searchTerm);
         client.get(url, params, responseHandler);
+    }
+
+    public void queryTag(String searchTerm, JsonHttpResponseHandler responseHandler) {
+        String url = "https://api.instagram.com/v1/tags/search";
+        RequestParams params = new RequestParams();
+        addAccessToken(params);
+        params.put("q", searchTerm);
+        client.get(url, params, responseHandler);
+    }
+
+    private void addAccessToken(RequestParams params) {
+        params.put("access_token", accessToken);
     }
 }

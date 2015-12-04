@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_gravity="center|left"
+                android:layout_width="match_parent"
+                android:layout_height="64dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:text="TAGNAME"
+        android:id="@+id/tvTagName"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textColor="@color/light_gray_text"
+        android:text="COUNT"
+        android:id="@+id/tvTagCount"/>
+
+</RelativeLayout>
