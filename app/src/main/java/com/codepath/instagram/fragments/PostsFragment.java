@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,6 +23,7 @@ import com.codepath.instagram.helpers.SimpleVerticalSpacerItemDecoration;
 import com.codepath.instagram.helpers.Utils;
 import com.codepath.instagram.models.InstagramPost;
 import com.codepath.instagram.networking.InstagramClient;
+import com.codepath.instagram.persistence.InstagramClientDatabase;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONObject;
@@ -34,6 +36,7 @@ public class PostsFragment extends Fragment {
 
     private List<InstagramPost> posts;
     private SwipeRefreshLayout swipeContainer;
+    private InstagramPostsAdapter adapter;
 
     public static PostsFragment newInstance() {
         PostsFragment fragment = new PostsFragment();
@@ -50,11 +53,9 @@ public class PostsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (!isNetworkAvailable()) {
+        if(!isNetworkAvailable()) {
             Utils.makeToast("Please check your network", getActivity());
-            return;
         }
-        fetchPosts();
     }
 
     @Override
@@ -67,6 +68,8 @@ public class PostsFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        fetchPosts();
+
         swipeContainer = (SwipeRefreshLayout) getView().findViewById(R.id.swipeContainer);
         // Setup refresh listener which triggers new data loading
         swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -83,26 +86,49 @@ public class PostsFragment extends Fragment {
     }
 
     private void fetchPosts() {
+        // whether there's network or not, we first read posts and comments from local database
+        InstagramClientDatabase db = InstagramClientDatabase.getInstance(getContext());
+        posts = db.getAllInstagramPosts();
+        db.close();
+
+        // start rendering even before we make network request to Instagram
+        // we may endup with rendering local cache from db
+        startRender();
+
         InstagramClient client = MainApplication.getRestClient();
         client.getFeed(new JsonHttpResponseHandler() {
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                 posts = Utils.decodePostsFromJsonResponse(response);
-                RecyclerView rvPosts = (RecyclerView) getView().findViewById(R.id.rvPosts);
-                InstagramPostsAdapter adapter = new InstagramPostsAdapter(posts, getActivity());
-                rvPosts.setAdapter(adapter);
-                rvPosts.setLayoutManager(new LinearLayoutManager(getActivity()));
-                rvPosts.addItemDecoration(new SimpleVerticalSpacerItemDecoration(24));
 
-                // deal with the case when fetch was triggered by swipe
+                adapter.notifyDataSetChanged();
+
+                // stop the refreshing animation if there is
                 swipeContainer.setRefreshing(false);
+
+                // persist network response
+                InstagramClientDatabase db = InstagramClientDatabase.getInstance(getContext());
+                db.emptyAllTables();
+                db.addInstagramPosts(posts);
+                db.close();
             }
 
             @Override
-            public void onFailure(int statusCode, Header[] headers, String responseString, Throwable throwable) {
+            public void onFailure(int statusCode, Header[] header, Throwable throwable, JSONObject json) {
                 Utils.makeToast("Please check your network", getActivity());
+
+                // stop the refreshing animation if there is
+                swipeContainer.setRefreshing(false);
             }
         });
+    }
+
+    private void startRender() {
+        RecyclerView rvPosts = (RecyclerView) getView().findViewById(R.id.rvPosts);
+        adapter = new InstagramPostsAdapter(posts, getActivity());
+        rvPosts.setAdapter(adapter);
+        rvPosts.setLayoutManager(new LinearLayoutManager(getActivity()));
+        rvPosts.addItemDecoration(new SimpleVerticalSpacerItemDecoration(24));
     }
 
     private Boolean isNetworkAvailable() {

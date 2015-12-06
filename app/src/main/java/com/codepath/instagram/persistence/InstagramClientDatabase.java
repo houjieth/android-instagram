@@ -148,17 +148,85 @@ public class InstagramClientDatabase extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // TODO: Implement this method
+        if (oldVersion != newVersion) {
+            onDrop(db);
+            onCreate(db);
+            db.setVersion(newVersion);
+        }
+    }
+
+    private void onDrop(SQLiteDatabase db) {
+        String DROP_POSTS_TABLE = "DROP TABLE " + TABLE_POSTS;
+        String DROP_USERS_TABLE = "DROP TABLE " + TABLE_USERS;
+        String DROP_IMAGES_TABLE = "DROP TABLE " + TABLE_IMAGES;
+        String DROP_COMMENTS_TABLE = "DROP TABLE " + TABLE_COMMENTS;
+        String DROP_POSTS_COMMENTS_TABLE = "DROP TABLE " + TABLE_POST_COMMENTS;
+
+        db.execSQL(DROP_POSTS_TABLE);
+        db.execSQL(DROP_USERS_TABLE);
+        db.execSQL(DROP_IMAGES_TABLE);
+        db.execSQL(DROP_COMMENTS_TABLE);
+        db.execSQL(DROP_POSTS_COMMENTS_TABLE);
     }
 
     public void emptyAllTables() {
-        // TODO: Implement this method to delete all rows from all tables
+        SQLiteDatabase db = getWritableDatabase();
+        String EMPTY_POSTS_TABLE = "DELETE FROM " + TABLE_POSTS;
+        String EMPTY_USERS_TABLE = "DELETE FROM " + TABLE_USERS;
+        String EMPTY_IMAGES_TABLE = "DELETE FROM " + TABLE_IMAGES;
+        String EMPTY_COMMENTS_TABLE = "DELETE FROM " + TABLE_COMMENTS;
+        String EMPTY_POSTS_COMMENTS_TABLE = "DELETE FROM " + TABLE_POST_COMMENTS;
+
+        db.beginTransaction();
+        try {
+            db.execSQL(EMPTY_POSTS_COMMENTS_TABLE);
+            db.execSQL(EMPTY_POSTS_TABLE);
+            db.execSQL(EMPTY_COMMENTS_TABLE);
+            db.execSQL(EMPTY_USERS_TABLE);
+            db.execSQL(EMPTY_IMAGES_TABLE);
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
     }
 
     public void addInstagramPosts(List<InstagramPost> posts) {
-        // TODO: Implement this method
-        // Take a look at the helper methods addImage, addComment, etc as you implement this method
-        // It's also a good idea to do this work in a transaction
+        SQLiteDatabase db = getWritableDatabase();
+        db.beginTransaction();
+        try {
+            for (InstagramPost post : posts) {
+                long userId = addorUpdateUser(post.user);
+                long imageId = addImage(post.image);
+                long postId = addPost(post, userId, imageId);
+                if (post.comments != null && !post.comments.isEmpty()) {
+                    for (InstagramComment comment : post.comments) {
+                        addComment(comment, postId);
+                    }
+                }
+            }
+            db.setTransactionSuccessful();
+        } finally {
+            db.endTransaction();
+        }
+    }
+
+    private long addPost(InstagramPost post, long userId, long imageId) {
+        if (post == null) {
+            throw new IllegalArgumentException(String.format("Attemping to add a null image to %s", DATABASE_NAME));
+        }
+
+        SQLiteDatabase db = getWritableDatabase();
+
+        ContentValues values = new ContentValues();
+        values.put(KEY_POST_MEDIA_ID, post.mediaId);
+        values.put(KEY_POST_USER_ID_FK, userId);
+        values.put(KEY_POST_IMAGE_ID_FK, imageId);
+        values.put(KEY_POST_CAPTION, post.caption);
+        values.put(KEY_POST_LIKES_COUNT, post.likesCount);
+        values.put(KEY_POST_COMMENTS_COUNT, post.commentsCount);
+        values.put(KEY_POST_CREATED_TIME, post.createdTime);
+
+        return db.insert(TABLE_POSTS, null, values);
     }
 
     // Poor man's "upsert".
