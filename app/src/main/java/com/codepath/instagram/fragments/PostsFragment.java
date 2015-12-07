@@ -1,5 +1,6 @@
 package com.codepath.instagram.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -24,6 +25,7 @@ import com.codepath.instagram.core.MainApplication;
 import com.codepath.instagram.helpers.SimpleVerticalSpacerItemDecoration;
 import com.codepath.instagram.helpers.Utils;
 import com.codepath.instagram.models.InstagramPost;
+import com.codepath.instagram.models.InstagramPosts;
 import com.codepath.instagram.networking.InstagramClient;
 import com.codepath.instagram.persistence.InstagramClientDatabase;
 import com.codepath.instagram.receiver.NetworkResultReceiver;
@@ -32,6 +34,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import cz.msebera.android.httpclient.Header;
@@ -62,7 +65,6 @@ public class PostsFragment extends Fragment {
             Utils.makeToast("Please check your network", getActivity());
         }
         setupServiceReceiver();
-        launchService();
     }
 
     @Override
@@ -98,36 +100,12 @@ public class PostsFragment extends Fragment {
         posts = db.getAllInstagramPosts();
         db.close();
 
+        // launch network service to fetch posts
+        launchService();
+
         // start rendering even before we make network request to Instagram
-        // we may endup with rendering local cache from db
+        // we may end up with rendering local cache from db
         startRender();
-
-        InstagramClient client = MainApplication.getRestClient();
-        client.getFeed(new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                posts = Utils.decodePostsFromJsonResponse(response);
-
-                adapter.notifyDataSetChanged();
-
-                // stop the refreshing animation if there is
-                swipeContainer.setRefreshing(false);
-
-                // persist network response
-                InstagramClientDatabase db = InstagramClientDatabase.getInstance(getContext());
-                db.emptyAllTables();
-                db.addInstagramPosts(posts);
-                db.close();
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] header, Throwable throwable, JSONObject json) {
-                Utils.makeToast("Please check your network", getActivity());
-
-                // stop the refreshing animation if there is
-                swipeContainer.setRefreshing(false);
-            }
-        });
     }
 
     private void startRender() {
@@ -148,13 +126,28 @@ public class PostsFragment extends Fragment {
     private void setupServiceReceiver() {
         receiver = new NetworkResultReceiver(new Handler());
         receiver.setReceiver(new NetworkResultReceiver.Receiver() {
-
             // this is the callback function
             // (this is implementing the delegate function)
             @Override
             public void onReceiveResult(int resultCode, Bundle resultData) {
-                String text = resultData.getString("resultValue");
-                Utils.makeToast(text, getContext());
+                if(resultCode == Activity.RESULT_OK) {
+                    InstagramPosts postsToUnbundle = (InstagramPosts) resultData.getSerializable("posts");
+                    if (postsToUnbundle != null) {
+                        posts = postsToUnbundle.posts;
+                        adapter.notifyDataSetChanged();
+
+                        Utils.makeToast("GOT POSTS from service", getContext());
+                        // persist network response
+                        InstagramClientDatabase db = InstagramClientDatabase.getInstance(getContext());
+                        db.emptyAllTables();
+                        db.addInstagramPosts(posts);
+                        db.close();
+                    } // otherwise, leave posts as it is (might keep the content read from db)
+                } else {
+                    Utils.makeToast("Please check your network", getActivity());
+                }
+                // stop the refreshing animation if there is
+                swipeContainer.setRefreshing(false);
             }
         });
     }

@@ -24,7 +24,7 @@ public class InstagramClient extends OAuthBaseClient {
     public static final String REDIRECT_URI = Constants.REDIRECT_URI;
     public static final String SCOPE = Constants.SCOPE;
 
-    private String accessToken;
+    public String accessToken;
 
     public InstagramClient(Context context) {
         super(context, REST_API_CLASS, REST_URL,
