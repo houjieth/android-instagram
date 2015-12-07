@@ -3,6 +3,8 @@ This is a training project with Codepath
 
 # Demo
 
+All non-optional user stories are finished.
+
 ## Day 1
 
 ![Demo](https://github.com/houjieth/android-instagram/blob/master/Day1.gif)
