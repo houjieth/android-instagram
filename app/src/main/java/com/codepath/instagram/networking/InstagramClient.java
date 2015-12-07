@@ -2,6 +2,7 @@ package com.codepath.instagram.networking;
 
 import android.app.DownloadManager;
 import android.content.Context;
+import android.util.Log;
 
 import com.codepath.instagram.helpers.Constants;
 import com.codepath.oauth.OAuthBaseClient;
@@ -51,6 +52,7 @@ public class InstagramClient extends OAuthBaseClient {
         // we have to do it manually
         RequestParams params = new RequestParams();
         params.put("access_token", accessToken);
+        Log.d("Client-token", accessToken);
         client.get(url, params, responseHandler);
     }
 

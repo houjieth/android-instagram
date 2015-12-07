@@ -1,6 +1,6 @@
 package com.codepath.instagram.activities;
 
-import android.net.Uri;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
@@ -10,10 +10,7 @@ import android.view.MenuItem;
 
 import com.codepath.instagram.R;
 import com.codepath.instagram.adapter.HomeFragmentStatePagerAdapter;
-import com.codepath.instagram.fragments.PostsFragment;
-import com.codepath.instagram.fragments.SearchFragment;
-import com.codepath.instagram.fragments.SearchResultsFragment;
-import com.codepath.instagram.fragments.SearchTagsResultFragment;
+import com.codepath.instagram.services.NetworkIntentService;
 
 
 public class HomeActivity extends AppCompatActivity {

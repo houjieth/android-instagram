@@ -1,10 +1,12 @@
 package com.codepath.instagram.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -24,6 +26,8 @@ import com.codepath.instagram.helpers.Utils;
 import com.codepath.instagram.models.InstagramPost;
 import com.codepath.instagram.networking.InstagramClient;
 import com.codepath.instagram.persistence.InstagramClientDatabase;
+import com.codepath.instagram.receiver.NetworkResultReceiver;
+import com.codepath.instagram.services.NetworkIntentService;
 import com.loopj.android.http.JsonHttpResponseHandler;
 
 import org.json.JSONObject;
@@ -37,6 +41,7 @@ public class PostsFragment extends Fragment {
     private List<InstagramPost> posts;
     private SwipeRefreshLayout swipeContainer;
     private InstagramPostsAdapter adapter;
+    private NetworkResultReceiver receiver;
 
     public static PostsFragment newInstance() {
         PostsFragment fragment = new PostsFragment();
@@ -56,6 +61,8 @@ public class PostsFragment extends Fragment {
         if(!isNetworkAvailable()) {
             Utils.makeToast("Please check your network", getActivity());
         }
+        setupServiceReceiver();
+        launchService();
     }
 
     @Override
@@ -136,5 +143,25 @@ public class PostsFragment extends Fragment {
                 = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
+    }
+
+    private void setupServiceReceiver() {
+        receiver = new NetworkResultReceiver(new Handler());
+        receiver.setReceiver(new NetworkResultReceiver.Receiver() {
+
+            // this is the callback function
+            // (this is implementing the delegate function)
+            @Override
+            public void onReceiveResult(int resultCode, Bundle resultData) {
+                String text = resultData.getString("resultValue");
+                Utils.makeToast(text, getContext());
+            }
+        });
+    }
+
+    private void launchService() {
+        Intent intent = new Intent(getContext(), NetworkIntentService.class);
+        intent.putExtra("receiver", receiver);
+        getActivity().startService(intent);
     }
 }
