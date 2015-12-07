@@ -136,7 +136,6 @@ public class PostsFragment extends Fragment {
                         posts = postsToUnbundle.posts;
                         adapter.notifyDataSetChanged();
 
-                        Utils.makeToast("GOT POSTS from service", getContext());
                         // persist network response
                         InstagramClientDatabase db = InstagramClientDatabase.getInstance(getContext());
                         db.emptyAllTables();
